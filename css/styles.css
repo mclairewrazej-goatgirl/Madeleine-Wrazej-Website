@@ -479,9 +479,83 @@ body {
   color: var(--accent);
 }
 
+/* === Photos === */
+.photos {
+  background: var(--bg-alt);
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.photo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.photo-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-placeholder {
+  width: 100%;
+  height: 240px;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--border);
+}
+
+.photo-card figcaption {
+  padding: 14px 18px;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
 /* === Resume === */
 .resume {
   background: var(--bg);
+}
+
+.resume-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+.resume-section-header .section-title {
+  margin-bottom: 52px;
+}
+
+.resume-download-btn {
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.resume-print-header {
+  display: none;
 }
 
 .resume-summary {
@@ -734,5 +808,109 @@ body {
 
   .hero-decoration {
     display: none;
+  }
+}
+
+/* === Print (resume PDF download) === */
+@media print {
+  @page { margin: 1.5cm 2cm; }
+
+  .construction-banner,
+  .site-header,
+  #hero,
+  #about,
+  #education,
+  #projects,
+  #photos,
+  #contact,
+  .site-footer,
+  .resume-download-btn {
+    display: none !important;
+  }
+
+  body {
+    color: #111;
+    background: white;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  #resume {
+    padding: 0;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .resume-print-header {
+    display: block;
+    margin-bottom: 20pt;
+    padding-bottom: 10pt;
+    border-bottom: 2px solid #111;
+  }
+
+  .resume-print-header h1 {
+    font-size: 22pt;
+    color: #111;
+    margin-bottom: 3pt;
+  }
+
+  .resume-print-header p {
+    font-size: 10pt;
+    color: #555;
+  }
+
+  .resume-section-header .section-title {
+    margin-bottom: 18pt;
+  }
+
+  .section-title {
+    color: #111;
+    font-size: 18pt;
+  }
+
+  .section-title::after {
+    background: #555;
+  }
+
+  .resume-block-title,
+  .resume-entry-role {
+    color: #1B4332;
+  }
+
+  .resume-entry-org {
+    color: #111;
+  }
+
+  .resume-summary p,
+  .resume-entry li,
+  .resume-entry-date {
+    color: #333;
+  }
+
+  .resume-entries {
+    border-left-color: #ccc;
+  }
+
+  .resume-entry {
+    border-bottom-color: #eee;
+    page-break-inside: avoid;
+  }
+
+  .resume-block {
+    page-break-inside: avoid;
+  }
+
+  .tag {
+    background: #f0f0f0;
+    color: #333;
+    border-radius: 4px;
+  }
+
+  .fade-in {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
