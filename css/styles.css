@@ -153,12 +153,37 @@ body {
   background: linear-gradient(140deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
 }
 
-.hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 680px;
+.hero-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
   padding-top: 80px;
   padding-bottom: 40px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 580px;
+}
+
+.hero-photo {
+  flex-shrink: 0;
+}
+
+.profile-photo {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* Adjust the vertical % to shift the crop: lower = more face/top, higher = more body/bottom */
+  object-position: center 18%;
+  border: 5px solid white;
+  box-shadow: 0 8px 32px rgba(27, 67, 50, 0.2);
+  display: block;
 }
 
 .hero-eyebrow {
@@ -767,6 +792,18 @@ body {
   .nav-links a {
     display: block;
     padding: 14px 0;
+  }
+
+  .hero-inner {
+    flex-direction: column-reverse;
+    gap: 32px;
+    padding-top: 100px;
+    padding-bottom: 48px;
+  }
+
+  .profile-photo {
+    width: 180px;
+    height: 180px;
   }
 
   .about-grid {
