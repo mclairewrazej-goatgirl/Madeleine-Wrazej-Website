@@ -530,9 +530,9 @@ body {
 
 .photo-card img {
   width: 100%;
-  height: 240px;
-  object-fit: cover;
+  height: auto;
   display: block;
+  cursor: pointer;
 }
 
 .photo-placeholder {
@@ -675,6 +675,48 @@ body {
   position: absolute;
   left: 0;
   color: var(--accent);
+}
+
+/* === Lightbox === */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.lightbox.open {
+  display: flex;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2.25rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.lightbox-close:hover {
+  opacity: 1;
 }
 
 /* === Contact === */

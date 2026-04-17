@@ -51,3 +51,30 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
 // Run active link check on load
 updateActiveNavLink();
+
+// Lightbox
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = lightbox.querySelector('.lightbox-img');
+
+document.querySelectorAll('.photo-card img').forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+});
+
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
