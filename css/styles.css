@@ -50,6 +50,17 @@ body {
   padding: 96px 0;
 }
 
+/* === Construction Banner === */
+.construction-banner {
+  background: var(--primary);
+  color: #86efac;
+  text-align: center;
+  padding: 10px 24px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
 /* === Navigation === */
 .site-header {
   position: fixed;
