@@ -473,42 +473,100 @@ body {
   background: var(--bg);
 }
 
-.resume-content {
-  max-width: 520px;
+.resume-summary {
+  max-width: 720px;
+  margin-bottom: 48px;
 }
 
-.resume-content > p {
+.resume-summary p {
   color: var(--text-muted);
   font-size: 1.0625rem;
-  margin-bottom: 32px;
-  line-height: 1.75;
+  line-height: 1.8;
 }
 
-.resume-placeholder {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 48px 40px;
-  text-align: center;
-  background: var(--bg-alt);
+.resume-block {
+  margin-bottom: 48px;
 }
 
-.resume-placeholder-icon {
-  font-size: 3rem;
-  margin-bottom: 16px;
-  line-height: 1;
+.resume-block:last-child {
+  margin-bottom: 0;
 }
 
-.resume-coming-soon {
-  font-size: 1.125rem;
+.resume-block-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+
+.resume-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resume-entries {
+  border-left: 2px solid var(--border);
+  padding-left: 24px;
+}
+
+.resume-entry {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.resume-entry:last-child {
+  border-bottom: none;
+}
+
+.resume-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.resume-entry-org {
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--primary);
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
-.resume-note {
+.resume-entry-role {
+  color: var(--accent);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.resume-entry-date {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.resume-entry ul {
+  list-style: none;
+  padding: 0;
+}
+
+.resume-entry li {
   color: var(--text-muted);
   font-size: 0.9375rem;
   line-height: 1.6;
+  padding: 4px 0 4px 16px;
+  position: relative;
+}
+
+.resume-entry li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
 }
 
 /* === Contact === */
@@ -648,8 +706,13 @@ body {
     flex-direction: column;
   }
 
-  .resume-placeholder {
-    padding: 36px 24px;
+  .resume-entry-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .resume-entry-date {
+    white-space: normal;
   }
 }
 
