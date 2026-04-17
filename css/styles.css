@@ -177,10 +177,8 @@ body {
 .profile-photo {
   width: 300px;
   height: 300px;
-  border-radius: 50%;
+  border-radius: var(--radius);
   object-fit: cover;
-  /* Adjust the vertical % to shift the crop: lower = more face/top, higher = more body/bottom */
-  object-position: center 18%;
   border: 5px solid white;
   box-shadow: 0 8px 32px rgba(27, 67, 50, 0.2);
   display: block;
