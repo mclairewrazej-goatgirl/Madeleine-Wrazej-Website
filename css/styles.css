@@ -358,13 +358,24 @@ body {
   background: var(--bg-alt);
 }
 
+.education-grid {
+  display: flex;
+  gap: 24px;
+}
+
 .education-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 40px;
-  max-width: 720px;
+  flex: 1;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+@media (max-width: 768px) {
+  .education-grid {
+    flex-direction: column;
+  }
 }
 
 .education-card:hover {
