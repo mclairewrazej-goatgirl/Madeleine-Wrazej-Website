@@ -479,186 +479,362 @@
 
   <!-- Phenology Demo Modal -->
   <div id="modal-phenology" class="demo-modal" role="dialog" aria-modal="true" aria-label="Mountain Parks Phenology Dashboard Demo">
-    <div class="demo-modal-dialog">
+    <div class="demo-modal-dialog st-modal-dialog">
       <button class="demo-modal-close" aria-label="Close demo">&times;</button>
-      <div class="pheno-dashboard">
-        <aside class="pheno-sidebar">
-          <div class="pheno-sidebar-header">
-            <span>🌿</span>
-            <span>PhenoTracker</span>
-          </div>
-          <div class="pheno-control">
-            <label>Park</label>
-            <select>
-              <option>Banff National Park</option>
-              <option>Jasper National Park</option>
-              <option>Yoho National Park</option>
-              <option>Kootenay National Park</option>
-            </select>
-          </div>
-          <div class="pheno-control">
-            <label>Site</label>
-            <select>
-              <option>BNF_MeadowSite_01</option>
-              <option>BNF_ForestSite_02</option>
-              <option>BNF_AlpineSite_03</option>
-            </select>
-          </div>
-          <div class="pheno-control">
-            <label>Season</label>
-            <select>
-              <option>2024</option>
-              <option>2023</option>
-              <option>2022</option>
-            </select>
-          </div>
-          <div class="pheno-control">
-            <label>Metric</label>
-            <select>
-              <option>Green Chromatic Coord.</option>
-              <option>NDVI (simulated)</option>
-              <option>Snow Cover (%)</option>
-            </select>
-          </div>
-          <button class="pheno-run-btn" id="pheno-run-btn">Run Analysis</button>
-          <p class="pheno-note">Demo only — data not live</p>
-        </aside>
-        <div class="pheno-main">
+      <div class="st-app">
+
+        <!-- Streamlit top bar -->
+        <div class="st-topbar">
+          <span class="st-topbar-title">🌿 Mountain Parks PhenoCam Data Explorer</span>
           <span class="demo-badge">Interactive Demo</span>
-          <h3 class="pheno-main-title" id="pheno-main-title">Seasonal Greenness — Banff Meadow Site</h3>
-          <div class="pheno-stats">
-            <div class="pheno-stat">
-              <span class="pheno-stat-label">Green-up (SOS)</span>
-              <span class="pheno-stat-value">May 18</span>
-            </div>
-            <div class="pheno-stat">
-              <span class="pheno-stat-label">Peak Greenness</span>
-              <span class="pheno-stat-value">Jul 12</span>
-            </div>
-            <div class="pheno-stat">
-              <span class="pheno-stat-label">Senescence (EOS)</span>
-              <span class="pheno-stat-value">Sep 24</span>
-            </div>
-            <div class="pheno-stat">
-              <span class="pheno-stat-label">Growing Season</span>
-              <span class="pheno-stat-value">129 days</span>
-            </div>
-          </div>
-          <div class="pheno-chart-wrap">
-            <svg viewBox="0 0 560 200" class="pheno-chart" aria-label="Seasonal GCC time series chart">
-              <line x1="55" y1="15" x2="530" y2="15" stroke="#E5E7EB" stroke-width="1"/>
-              <line x1="55" y1="47" x2="530" y2="47" stroke="#E5E7EB" stroke-width="1"/>
-              <line x1="55" y1="90" x2="530" y2="90" stroke="#E5E7EB" stroke-width="1"/>
-              <line x1="55" y1="132" x2="530" y2="132" stroke="#E5E7EB" stroke-width="1"/>
-              <line x1="55" y1="175" x2="530" y2="175" stroke="#D1D5DB" stroke-width="1.5"/>
-              <line x1="55" y1="15" x2="55" y2="175" stroke="#D1D5DB" stroke-width="1.5"/>
-              <text x="48" y="19" text-anchor="end" font-size="9" fill="#9CA3AF">0.45</text>
-              <text x="48" y="51" text-anchor="end" font-size="9" fill="#9CA3AF">0.42</text>
-              <text x="48" y="94" text-anchor="end" font-size="9" fill="#9CA3AF">0.38</text>
-              <text x="48" y="136" text-anchor="end" font-size="9" fill="#9CA3AF">0.34</text>
-              <text x="48" y="179" text-anchor="end" font-size="9" fill="#9CA3AF">0.30</text>
-              <text x="55" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Apr</text>
-              <text x="134" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">May</text>
-              <text x="213" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Jun</text>
-              <text x="292" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Jul</text>
-              <text x="371" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Aug</text>
-              <text x="450" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Sep</text>
-              <text x="530" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Oct</text>
-              <polyline points="55,164 134,138 213,74 292,36 371,52 450,116 530,164" fill="none" stroke="#95D5B2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-              <circle cx="55" cy="164" r="3" fill="#95D5B2"/>
-              <circle cx="134" cy="138" r="3" fill="#95D5B2"/>
-              <circle cx="213" cy="74" r="3" fill="#95D5B2"/>
-              <circle cx="292" cy="36" r="3" fill="#95D5B2"/>
-              <circle cx="371" cy="52" r="3" fill="#95D5B2"/>
-              <circle cx="450" cy="116" r="3" fill="#95D5B2"/>
-              <circle cx="530" cy="164" r="3" fill="#95D5B2"/>
-              <polyline points="55,159 134,116 213,52 292,26 371,42 450,100 530,159" fill="none" stroke="#52B788" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-              <circle cx="55" cy="159" r="3.5" fill="#52B788"/>
-              <circle cx="134" cy="116" r="3.5" fill="#52B788"/>
-              <circle cx="213" cy="52" r="3.5" fill="#52B788"/>
-              <circle cx="292" cy="26" r="3.5" fill="#52B788"/>
-              <circle cx="371" cy="42" r="3.5" fill="#52B788"/>
-              <circle cx="450" cy="100" r="3.5" fill="#52B788"/>
-              <circle cx="530" cy="159" r="3.5" fill="#52B788"/>
-              <line x1="292" y1="26" x2="292" y2="15" stroke="#52B788" stroke-width="1" stroke-dasharray="2,2"/>
-              <text x="292" y="12" text-anchor="middle" font-size="8" fill="#52B788" font-weight="600">Peak</text>
-            </svg>
-            <div class="pheno-chart-legend">
-              <span class="legend-item legend-2024">2024</span>
-              <span class="legend-item legend-2023">2023</span>
-            </div>
-          </div>
-          <div class="pheno-cam-section">
-            <div class="pheno-cam-label">PhenoCam · BNF_MeadowSite_01 · 2024-07-12 12:00 MDT</div>
-            <div class="pheno-cam-img" aria-hidden="true"></div>
-          </div>
         </div>
-      </div>
+
+        <div class="st-layout">
+
+          <!-- Sidebar -->
+          <aside class="st-sidebar">
+            <div class="st-sb-section">
+              <div class="st-sb-heading">Data source</div>
+              <div class="st-file-drop">
+                <span class="st-file-icon">📁</span>
+                <span class="st-file-text">Upload CSV files</span>
+                <span class="st-file-hint">Demo data pre-loaded</span>
+              </div>
+              <div class="st-sb-subtext">Optional local CSV paths</div>
+              <div class="st-sb-textarea">outputs/vegetation_indices.csv</div>
+            </div>
+            <div class="st-sb-divider"></div>
+            <div class="st-sb-section">
+              <div class="st-sb-expander">
+                <span>▶</span> R package status
+              </div>
+              <div class="st-pkg-ok">✓ mgcv 1.9-1 · phenopix 2.4.2</div>
+            </div>
+            <div class="st-sb-note">Demo only — synthetic data</div>
+          </aside>
+
+          <!-- Main -->
+          <div class="st-main">
+            <div class="st-success-banner">✓ Loaded 1 file — 2,847 rows, 12 columns.</div>
+
+            <!-- Controls row 1 -->
+            <div class="st-ctrl-row">
+              <div class="st-ctrl">
+                <label class="st-label">Sites</label>
+                <div class="st-multisel">
+                  <span class="st-chip">BNF_Meadow_01 ×</span>
+                  <span class="st-chip">YHO_Alpine_03 ×</span>
+                </div>
+              </div>
+              <div class="st-ctrl">
+                <label class="st-label">Years</label>
+                <div class="st-multisel">
+                  <span class="st-chip">2023 ×</span>
+                  <span class="st-chip">2024 ×</span>
+                </div>
+              </div>
+              <div class="st-ctrl">
+                <label class="st-label">X axis</label>
+                <select class="st-sel">
+                  <option selected>standard_doy</option>
+                  <option>date_numeric</option>
+                </select>
+              </div>
+              <div class="st-ctrl">
+                <label class="st-label">Y axis</label>
+                <select class="st-sel">
+                  <option selected>gcc</option>
+                  <option>rcc</option>
+                  <option>bcc</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Controls row 2 -->
+            <div class="st-ctrl-row st-ctrl-row-2">
+              <div class="st-ctrl">
+                <label class="st-label">SnowFree threshold</label>
+                <div class="st-slider-row">
+                  <input type="range" class="st-slider" min="0" max="100" value="50" id="pheno-snow-thresh">
+                  <span class="st-slider-val" id="pheno-snow-val">0.50</span>
+                </div>
+              </div>
+              <div class="st-ctrl">
+                <label class="st-label">Plot mode</label>
+                <div class="st-radio-grp">
+                  <label class="st-radio-opt st-radio-active" id="pheno-mode-overlay">
+                    <input type="radio" name="pheno-plot-mode" value="overlay" checked> Overlay
+                  </label>
+                  <label class="st-radio-opt" id="pheno-mode-facet">
+                    <input type="radio" name="pheno-plot-mode" value="faceted"> Faceted
+                  </label>
+                </div>
+              </div>
+              <div class="st-ctrl">
+                <label class="st-label">Curve-fit aggregation</label>
+                <select class="st-sel" id="pheno-aggregation">
+                  <option>Raw image-level GCC</option>
+                  <option selected>3-day window, 90th percentile</option>
+                  <option>7-day window, 90th percentile</option>
+                  <option>15-day window, 90th percentile</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Main tabs -->
+            <div class="st-tabs-bar" role="tablist">
+              <button class="st-tab st-tab-active" data-target="pheno-panel-autofit" role="tab">Autofit GAM</button>
+              <button class="st-tab" data-target="pheno-panel-compare" role="tab">Explore curve fitting methods</button>
+            </div>
+
+            <!-- ===== AUTOFIT GAM PANEL ===== -->
+            <div class="st-panel" id="pheno-panel-autofit">
+              <div class="st-gam-row">
+                <div class="st-ctrl-sm">
+                  <label class="st-label-sm">Basis</label>
+                  <select class="st-sel-sm"><option selected>ts</option><option>tp</option><option>cr</option><option>cs</option></select>
+                </div>
+                <div class="st-ctrl-sm">
+                  <label class="st-label-sm">k start</label>
+                  <input type="number" class="st-num" value="10" min="3" max="200">
+                </div>
+                <div class="st-ctrl-sm">
+                  <label class="st-label-sm">k stop</label>
+                  <input type="number" class="st-num" value="50" min="3" max="200">
+                </div>
+                <div class="st-ctrl-sm">
+                  <label class="st-label-sm">k step</label>
+                  <input type="number" class="st-num" value="5" min="1">
+                </div>
+                <div class="st-ctrl-sm">
+                  <label class="st-label-sm">dev expl prop</label>
+                  <input type="number" class="st-num" value="0.99" step="0.01" min="0.5" max="1.0">
+                </div>
+              </div>
+              <div class="st-ctrl" style="margin-bottom:10px">
+                <label class="st-label">SOS and EOS logic</label>
+                <select class="st-sel" id="pheno-sos-logic">
+                  <option selected>Curve shape</option>
+                  <option>Relative threshold seasonal amplitude 10%</option>
+                  <option>Relative threshold seasonal amplitude 25%</option>
+                  <option>Relative threshold seasonal amplitude 50%</option>
+                </select>
+              </div>
+
+              <!-- Sub-tabs -->
+              <div class="st-subtabs-bar" role="tablist">
+                <button class="st-subtab st-subtab-active" data-subtarget="pheno-sub-plots" role="tab">Plots</button>
+                <button class="st-subtab" data-subtarget="pheno-sub-metrics" role="tab">Final Fit Metrics</button>
+                <button class="st-subtab" data-subtarget="pheno-sub-k" role="tab">K Comparison</button>
+                <button class="st-subtab" data-subtarget="pheno-sub-seasonal" role="tab">Seasonal Parameters</button>
+                <button class="st-subtab" data-subtarget="pheno-sub-preview" role="tab">Preview</button>
+              </div>
+
+              <!-- Sub-panel: Plots -->
+              <div class="st-subpanel st-subpanel-active" id="pheno-sub-plots">
+                <div class="st-chart-wrap">
+                  <svg id="pheno-gam-svg" viewBox="0 0 700 248" class="pheno-svg" aria-label="GAM GCC time series"></svg>
+                  <div id="pheno-gam-legend" class="st-legend"></div>
+                </div>
+                <div class="st-dl-row">
+                  <button class="st-dl-btn">⬇ Download plot as PNG</button>
+                  <button class="st-dl-btn">⬇ Download plot as HTML</button>
+                </div>
+                <p class="st-note">Download destination is controlled by your browser settings.</p>
+              </div>
+
+              <!-- Sub-panel: Final Fit Metrics -->
+              <div class="st-subpanel" id="pheno-sub-metrics">
+                <div class="st-tbl-wrap" id="pheno-metrics-tbl"></div>
+                <button class="st-dl-btn">⬇ Download final selected-k summary CSV</button>
+              </div>
+
+              <!-- Sub-panel: K Comparison -->
+              <div class="st-subpanel" id="pheno-sub-k">
+                <p class="st-note" style="margin-bottom:8px">Comparison table columns: k, basis, edf, ref_df, F_value, p_value, adj_r_sq, dev_expl, reml_score, scale, sp, k_index, k_p_value, max_dev_expl, within_threshold.</p>
+                <div class="st-tbl-wrap" id="pheno-k-tbl"></div>
+                <button class="st-dl-btn">⬇ Download full k comparison CSV</button>
+              </div>
+
+              <!-- Sub-panel: Seasonal Parameters -->
+              <div class="st-subpanel" id="pheno-sub-seasonal">
+                <p class="st-note" style="margin-bottom:8px">Seasonal timing parameters derived from the final fitted GAM curve. IVI = Integrated Vegetation Index (AUC between SnowFree and SnowCover).</p>
+                <div class="st-tbl-wrap" id="pheno-seasonal-tbl"></div>
+                <button class="st-dl-btn">⬇ Download seasonal parameters CSV</button>
+              </div>
+
+              <!-- Sub-panel: Preview -->
+              <div class="st-subpanel" id="pheno-sub-preview">
+                <div class="st-tbl-wrap" id="pheno-preview-tbl"></div>
+              </div>
+            </div>
+
+            <!-- ===== COMPARE PANEL ===== -->
+            <div class="st-panel st-panel-hidden" id="pheno-panel-compare">
+              <p class="st-note" style="margin-bottom:10px">Compare GAM (mgcv), Phenopix spline, and double logistic (Savitzky–Golay smoothing → Beck fit) workflows on the same dataset.</p>
+              <div class="st-compare-toggles">
+                <label class="st-toggle-lbl"><input type="checkbox" id="cmp-gam" checked> Compare GAM (mgcv)</label>
+                <label class="st-toggle-lbl"><input type="checkbox" id="cmp-spline" checked> Compare Phenopix spline</label>
+                <label class="st-toggle-lbl"><input type="checkbox" id="cmp-dl" checked> Compare double logistic + SG</label>
+                <div class="st-ctrl-sm" style="margin-left:auto">
+                  <label class="st-label-sm">Spline TRS threshold</label>
+                  <input type="number" class="st-num" value="0.50" step="0.05" min="0.05" max="0.95" id="cmp-trs">
+                </div>
+              </div>
+              <div class="st-tabs-bar" role="tablist" style="margin-top:10px">
+                <button class="st-tab st-tab-active" data-target="cmp-panel-plots" role="tab">Plots</button>
+                <button class="st-tab" data-target="cmp-panel-metrics" role="tab">Metrics</button>
+                <button class="st-tab" data-target="cmp-panel-preview" role="tab">Preview data</button>
+              </div>
+              <div class="st-panel" id="cmp-panel-plots">
+                <div class="st-chart-wrap">
+                  <svg id="pheno-cmp-svg" viewBox="0 0 700 248" class="pheno-svg" aria-label="Curve method comparison"></svg>
+                  <div id="pheno-cmp-legend" class="st-legend"></div>
+                </div>
+                <div class="st-dl-row">
+                  <button class="st-dl-btn">⬇ Download comparison plot as PNG</button>
+                  <button class="st-dl-btn">⬇ Download comparison plot as HTML</button>
+                </div>
+              </div>
+              <div class="st-panel st-panel-hidden" id="cmp-panel-metrics">
+                <div class="st-tbl-wrap" id="cmp-metrics-tbl"></div>
+                <button class="st-dl-btn" style="margin-top:8px">⬇ Download comparison metrics CSV</button>
+              </div>
+              <div class="st-panel st-panel-hidden" id="cmp-panel-preview">
+                <div class="st-tbl-wrap" id="cmp-preview-tbl"></div>
+              </div>
+            </div>
+
+          </div><!-- /.st-main -->
+        </div><!-- /.st-layout -->
+      </div><!-- /.st-app -->
     </div>
   </div>
 
   <!-- Commuter App Demo Modal -->
   <div id="modal-commuter" class="demo-modal" role="dialog" aria-modal="true" aria-label="Commuter App Demo">
-    <div class="demo-modal-dialog">
+    <div class="demo-modal-dialog commuter-modal-dialog">
       <button class="demo-modal-close" aria-label="Close demo">&times;</button>
-      <div class="commuter-app">
-        <div class="commuter-header">
-          <h3>🚌 Commuter App</h3>
-          <span class="commuter-time" id="commuter-clock">8:14 AM</span>
-        </div>
-        <div class="commuter-body">
-          <span class="demo-badge">Interactive Demo</span>
-          <div class="commuter-route-input">
-            <div class="commuter-input-row">
-              <span class="commuter-input-dot start"></span>
-              <span class="commuter-input-label">From</span>
-              <span class="commuter-input-value">Home — 14 Larch Ave</span>
+      <div class="commuter-new-wrap">
+        <div class="commuter-phone">
+
+          <!-- Phone top bar -->
+          <div class="commuter-phone-bar">
+            <span class="commuter-phone-title">Commute</span>
+            <span class="demo-badge" style="font-size:0.625rem">Interactive Demo</span>
+          </div>
+
+          <!-- Log page -->
+          <div class="commuter-page" data-page="log">
+            <div class="commuter-quarter-banner">
+              <span id="commuter-quarter">Q2 2026</span>
             </div>
-            <div class="commuter-input-row">
-              <span class="commuter-input-dot end"></span>
-              <span class="commuter-input-label">To</span>
-              <span class="commuter-input-value">Downtown Office</span>
+            <div class="commuter-month-nav">
+              <button class="commuter-nav-arrow" id="commuter-prev-month">&#8249;</button>
+              <span id="commuter-month-label">May 2026</span>
+              <button class="commuter-nav-arrow" id="commuter-next-month">&#8250;</button>
+            </div>
+            <div id="commuter-log-card" class="commuter-log-card">
+              <p class="cc-prompt">Select a day to log your commute.</p>
+            </div>
+            <div class="commuter-cal-grid" id="commuter-cal-grid"></div>
+            <div class="commuter-legend">
+              <span class="cc-legend-dot cc-commuted"></span> Commuted
+              <span class="cc-legend-dot cc-absent" style="margin-left:10px"></span> Not at worksite
+              <span class="cc-legend-dot cc-unlogged" style="margin-left:10px"></span> Unlogged
             </div>
           </div>
-          <div class="commuter-routes">
-            <p class="commuter-routes-title">Upcoming Departures</p>
-            <div class="commuter-route-card best">
-              <div class="commuter-mode-icon">🚇</div>
-              <div class="commuter-route-info">
-                <div class="commuter-route-name">Route 8 — Rapid Rail</div>
-                <div class="commuter-route-detail">Platform B · 2 stops · No transfers</div>
+
+          <!-- Export page -->
+          <div class="commuter-page commuter-page-hidden" data-page="export">
+            <div class="commuter-export-wrap">
+              <h4 class="commuter-export-title">Export Commute Records</h4>
+              <p class="commuter-export-desc">Generate a pre-filled Excel commuting allowance record for submission.</p>
+              <div class="commuter-export-stat">
+                <span class="commuter-export-num" id="commuter-export-count">0</span>
+                <span class="commuter-export-label">commute days this month</span>
               </div>
-              <div class="commuter-route-time">
-                <div class="commuter-departs" id="departs-1">8:22 AM</div>
-                <div class="commuter-duration">28 min</div>
+              <div class="commuter-export-months">
+                <div class="commuter-export-month-row active">
+                  <span id="commuter-export-month-label">Current month</span>
+                  <span class="commuter-export-badge">Ready</span>
+                </div>
+                <div class="commuter-export-month-row">
+                  <span>Last month</span>
+                  <span class="commuter-export-badge">Ready</span>
+                </div>
+                <div class="commuter-export-month-row">
+                  <span>Two months ago</span>
+                  <span class="commuter-export-badge">Ready</span>
+                </div>
               </div>
-              <span class="commuter-best-badge">Fastest</span>
+              <button class="commuter-dl-export-btn" id="commuter-dl-btn">⬇ Download Excel (.xlsx)</button>
+              <button class="commuter-dl-export-btn commuter-dl-quarter-btn">⬇ Download full quarter (3 files)</button>
+              <p class="commuter-export-note">Demo only — no actual files generated.</p>
             </div>
-            <div class="commuter-route-card">
-              <div class="commuter-mode-icon">🚌</div>
-              <div class="commuter-route-info">
-                <div class="commuter-route-name">Bus 42 → Bus 7</div>
-                <div class="commuter-route-detail">Stop C · 1 transfer at Central</div>
+          </div>
+
+          <!-- Settings page -->
+          <div class="commuter-page commuter-page-hidden" data-page="settings">
+            <div class="commuter-settings-wrap">
+              <h4 class="commuter-settings-title">Settings</h4>
+              <div class="commuter-settings-group">
+                <div class="commuter-settings-label">Employee</div>
+                <div class="commuter-settings-field">M. Wrazej</div>
               </div>
-              <div class="commuter-route-time">
-                <div class="commuter-departs" id="departs-2">8:19 AM</div>
-                <div class="commuter-duration">41 min</div>
+              <div class="commuter-settings-group">
+                <div class="commuter-settings-label">Organization</div>
+                <div class="commuter-settings-field">Parks Canada</div>
               </div>
-            </div>
-            <div class="commuter-route-card">
-              <div class="commuter-mode-icon">🚶</div>
-              <div class="commuter-route-info">
-                <div class="commuter-route-name">Walk + Bus 12</div>
-                <div class="commuter-route-detail">7 min walk to stop · 1 stop</div>
+              <div class="commuter-settings-group">
+                <div class="commuter-settings-label">Worksite</div>
+                <div class="commuter-settings-field">Lake Louise Field Unit</div>
               </div>
-              <div class="commuter-route-time">
-                <div class="commuter-departs" id="departs-3">8:30 AM</div>
-                <div class="commuter-duration">35 min</div>
+              <div class="commuter-settings-group">
+                <div class="commuter-settings-label">Excel template</div>
+                <div class="commuter-settings-field">PC_Commuting_Template_2026.xlsx</div>
+              </div>
+              <div class="commuter-settings-toggle-row">
+                <span>Offline mode</span>
+                <span class="commuter-toggle-pill active">On</span>
+              </div>
+              <div class="commuter-settings-toggle-row">
+                <span>Sync on reconnect</span>
+                <span class="commuter-toggle-pill active">On</span>
               </div>
             </div>
           </div>
-          <div class="commuter-map-placeholder" aria-hidden="true">
-            <span class="commuter-map-label">Route map</span>
+
+          <!-- Bottom navigation -->
+          <div class="commuter-bottom-nav">
+            <button class="commuter-nav-btn commuter-nav-active" data-tab="log">
+              <span>📅</span><span>Log</span>
+            </button>
+            <button class="commuter-nav-btn" data-tab="export">
+              <span>📊</span><span>Export</span>
+            </button>
+            <button class="commuter-nav-btn" data-tab="settings">
+              <span>⚙️</span><span>Settings</span>
+            </button>
+          </div>
+
+        </div><!-- /.commuter-phone -->
+        <div class="commuter-info-panel">
+          <h4>About this app</h4>
+          <p>A Progressive Web App (PWA) for Parks Canada employees to log daily commutes and generate pre-filled monthly commuting allowance records in Excel format.</p>
+          <ul>
+            <li>Calendar logging — tap a day, tap Yes or No</li>
+            <li>Color-coded month view</li>
+            <li>One-click Excel export for payroll submission</li>
+            <li>Installable on iOS/Android; works offline</li>
+            <li>Supabase backend with sync on reconnect</li>
+          </ul>
+          <div class="commuter-tech-stack">
+            <span class="tag">React</span>
+            <span class="tag">Vite</span>
+            <span class="tag">Tailwind</span>
+            <span class="tag">Supabase</span>
+            <span class="tag">PWA</span>
           </div>
         </div>
       </div>
