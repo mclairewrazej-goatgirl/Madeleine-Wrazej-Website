@@ -148,9 +148,11 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(140deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+  background: url('../assets/photos/hero-bg.jpg') center/cover no-repeat;
+  padding: 100px 24px 60px;
 }
 
 .hero-inner {
@@ -158,11 +160,16 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 60px;
-  padding-top: 80px;
-  padding-bottom: 40px;
+  padding: 48px 52px;
   position: relative;
   z-index: 1;
   width: 100%;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22);
 }
 
 .hero-content {
@@ -224,15 +231,7 @@ body {
 }
 
 .hero-decoration {
-  position: absolute;
-  right: -120px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 700px;
-  height: 700px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(82, 183, 136, 0.18) 0%, transparent 65%);
-  pointer-events: none;
+  display: none;
 }
 
 /* === Buttons === */
@@ -1921,8 +1920,7 @@ body {
   .hero-inner {
     flex-direction: column-reverse;
     gap: 32px;
-    padding-top: 100px;
-    padding-bottom: 48px;
+    padding: 32px 28px;
   }
 
   .profile-photo {
