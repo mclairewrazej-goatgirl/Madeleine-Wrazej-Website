@@ -75,6 +75,63 @@ lightbox.addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     lightbox.classList.remove('open');
-    document.body.style.overflow = '';
+    closeAllDemos();
   }
 });
+
+// Demo modals
+function openDemo(id) {
+  const modal = document.getElementById('modal-' + id);
+  if (!modal) return;
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (id === 'commuter') initCommuterClock();
+}
+
+function closeAllDemos() {
+  document.querySelectorAll('.demo-modal').forEach(m => m.classList.remove('open'));
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.demo-modal').forEach(modal => {
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeAllDemos();
+  });
+});
+
+document.querySelectorAll('.demo-modal-close').forEach(btn => {
+  btn.addEventListener('click', closeAllDemos);
+});
+
+// Phenology "Run Analysis" button — updates title to reflect selected park/site
+document.getElementById('pheno-run-btn').addEventListener('click', () => {
+  const park = document.querySelector('#modal-phenology .pheno-control:nth-child(2) select').value;
+  const site = document.querySelector('#modal-phenology .pheno-control:nth-child(3) select').value;
+  const shortPark = park.replace(' National Park', '');
+  document.getElementById('pheno-main-title').textContent =
+    `Seasonal Greenness — ${shortPark} · ${site}`;
+});
+
+// Commuter clock — shows live time and offsets departure times
+let commuterClockInterval = null;
+function initCommuterClock() {
+  if (commuterClockInterval) return;
+  function tick() {
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes();
+    const fmt = (hh, mm) => {
+      const suffix = hh >= 12 ? 'PM' : 'AM';
+      const h12 = ((hh % 12) || 12);
+      return `${h12}:${String(mm).padStart(2, '0')} ${suffix}`;
+    };
+    document.getElementById('commuter-clock').textContent = fmt(h, m);
+    // Departures: +8 min, +5 min, +16 min from now
+    const offsets = [8, 5, 16];
+    ['departs-1', 'departs-2', 'departs-3'].forEach((id, i) => {
+      const total = m + offsets[i];
+      document.getElementById(id).textContent = fmt(h + Math.floor(total / 60), total % 60);
+    });
+  }
+  tick();
+  commuterClockInterval = setInterval(tick, 30000);
+}

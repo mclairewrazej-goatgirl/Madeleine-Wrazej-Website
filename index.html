@@ -172,19 +172,18 @@
             <h3>Mountain Parks Phenology Analysis</h3>
             <p>
               Analysis of plant phenology data collected across Canada's mountain national parks.
-              Develops reproducible workflows for processing time-series ecological data and
-              extracting meaningful seasonal patterns.
+              Develops reproducible workflows for processing PhenoCam time-series imagery and
+              extracting seasonal green-up and senescence signals using CNN-based image segmentation.
             </p>
             <div class="project-tags">
               <span class="tag">Python</span>
               <span class="tag">Streamlit</span>
               <span class="tag">PhenoAI</span>
               <span class="tag">PhenoCams</span>
-              <span class="tag">CNN/Image Segmentation</span>
+              <span class="tag">CNN / Image Segmentation</span>
             </div>
             <div class="project-links">
-              <!-- Update with your actual repo URL -->
-              <a href="https://github.com/mclairewrazej-goatgirl/Mountain-Parks-Phenology" class="project-link" target="_blank" rel="noopener noreferrer">GitHub →</a>
+              <button class="project-link project-demo-btn" onclick="openDemo('phenology')">View Demo →</button>
             </div>
           </article>
 
@@ -202,8 +201,25 @@
               <span class="tag">Personal Project</span>
             </div>
             <div class="project-links">
-              <!-- Update with your actual repo URL -->
-              <a href="#" class="project-link" target="_blank" rel="noopener noreferrer">GitHub →</a>
+              <a href="https://github.com/mclairewrazej-goatgirl/Ultra-Training-App" class="project-link" target="_blank" rel="noopener noreferrer">GitHub →</a>
+            </div>
+          </article>
+
+          <article class="project-card fade-in">
+            <div class="project-icon" aria-hidden="true">🚌</div>
+            <h3>Commuter App</h3>
+            <p>
+              A web app for planning and tracking your daily commute. Displays transit options,
+              estimated travel times, and departure schedules so you always know the fastest
+              way to get where you're going.
+            </p>
+            <div class="project-tags">
+              <span class="tag">JavaScript</span>
+              <span class="tag">Web App</span>
+              <span class="tag">Transit</span>
+            </div>
+            <div class="project-links">
+              <button class="project-link project-demo-btn" onclick="openDemo('commuter')">View Demo →</button>
             </div>
           </article>
 
@@ -460,6 +476,194 @@
     </section>
 
   </main>
+
+  <!-- Phenology Demo Modal -->
+  <div id="modal-phenology" class="demo-modal" role="dialog" aria-modal="true" aria-label="Mountain Parks Phenology Dashboard Demo">
+    <div class="demo-modal-dialog">
+      <button class="demo-modal-close" aria-label="Close demo">&times;</button>
+      <div class="pheno-dashboard">
+        <aside class="pheno-sidebar">
+          <div class="pheno-sidebar-header">
+            <span>🌿</span>
+            <span>PhenoTracker</span>
+          </div>
+          <div class="pheno-control">
+            <label>Park</label>
+            <select>
+              <option>Banff National Park</option>
+              <option>Jasper National Park</option>
+              <option>Yoho National Park</option>
+              <option>Kootenay National Park</option>
+            </select>
+          </div>
+          <div class="pheno-control">
+            <label>Site</label>
+            <select>
+              <option>BNF_MeadowSite_01</option>
+              <option>BNF_ForestSite_02</option>
+              <option>BNF_AlpineSite_03</option>
+            </select>
+          </div>
+          <div class="pheno-control">
+            <label>Season</label>
+            <select>
+              <option>2024</option>
+              <option>2023</option>
+              <option>2022</option>
+            </select>
+          </div>
+          <div class="pheno-control">
+            <label>Metric</label>
+            <select>
+              <option>Green Chromatic Coord.</option>
+              <option>NDVI (simulated)</option>
+              <option>Snow Cover (%)</option>
+            </select>
+          </div>
+          <button class="pheno-run-btn" id="pheno-run-btn">Run Analysis</button>
+          <p class="pheno-note">Demo only — data not live</p>
+        </aside>
+        <div class="pheno-main">
+          <span class="demo-badge">Interactive Demo</span>
+          <h3 class="pheno-main-title" id="pheno-main-title">Seasonal Greenness — Banff Meadow Site</h3>
+          <div class="pheno-stats">
+            <div class="pheno-stat">
+              <span class="pheno-stat-label">Green-up (SOS)</span>
+              <span class="pheno-stat-value">May 18</span>
+            </div>
+            <div class="pheno-stat">
+              <span class="pheno-stat-label">Peak Greenness</span>
+              <span class="pheno-stat-value">Jul 12</span>
+            </div>
+            <div class="pheno-stat">
+              <span class="pheno-stat-label">Senescence (EOS)</span>
+              <span class="pheno-stat-value">Sep 24</span>
+            </div>
+            <div class="pheno-stat">
+              <span class="pheno-stat-label">Growing Season</span>
+              <span class="pheno-stat-value">129 days</span>
+            </div>
+          </div>
+          <div class="pheno-chart-wrap">
+            <svg viewBox="0 0 560 200" class="pheno-chart" aria-label="Seasonal GCC time series chart">
+              <line x1="55" y1="15" x2="530" y2="15" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="55" y1="47" x2="530" y2="47" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="55" y1="90" x2="530" y2="90" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="55" y1="132" x2="530" y2="132" stroke="#E5E7EB" stroke-width="1"/>
+              <line x1="55" y1="175" x2="530" y2="175" stroke="#D1D5DB" stroke-width="1.5"/>
+              <line x1="55" y1="15" x2="55" y2="175" stroke="#D1D5DB" stroke-width="1.5"/>
+              <text x="48" y="19" text-anchor="end" font-size="9" fill="#9CA3AF">0.45</text>
+              <text x="48" y="51" text-anchor="end" font-size="9" fill="#9CA3AF">0.42</text>
+              <text x="48" y="94" text-anchor="end" font-size="9" fill="#9CA3AF">0.38</text>
+              <text x="48" y="136" text-anchor="end" font-size="9" fill="#9CA3AF">0.34</text>
+              <text x="48" y="179" text-anchor="end" font-size="9" fill="#9CA3AF">0.30</text>
+              <text x="55" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Apr</text>
+              <text x="134" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">May</text>
+              <text x="213" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Jun</text>
+              <text x="292" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Jul</text>
+              <text x="371" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Aug</text>
+              <text x="450" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Sep</text>
+              <text x="530" y="193" text-anchor="middle" font-size="9" fill="#9CA3AF">Oct</text>
+              <polyline points="55,164 134,138 213,74 292,36 371,52 450,116 530,164" fill="none" stroke="#95D5B2" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+              <circle cx="55" cy="164" r="3" fill="#95D5B2"/>
+              <circle cx="134" cy="138" r="3" fill="#95D5B2"/>
+              <circle cx="213" cy="74" r="3" fill="#95D5B2"/>
+              <circle cx="292" cy="36" r="3" fill="#95D5B2"/>
+              <circle cx="371" cy="52" r="3" fill="#95D5B2"/>
+              <circle cx="450" cy="116" r="3" fill="#95D5B2"/>
+              <circle cx="530" cy="164" r="3" fill="#95D5B2"/>
+              <polyline points="55,159 134,116 213,52 292,26 371,42 450,100 530,159" fill="none" stroke="#52B788" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+              <circle cx="55" cy="159" r="3.5" fill="#52B788"/>
+              <circle cx="134" cy="116" r="3.5" fill="#52B788"/>
+              <circle cx="213" cy="52" r="3.5" fill="#52B788"/>
+              <circle cx="292" cy="26" r="3.5" fill="#52B788"/>
+              <circle cx="371" cy="42" r="3.5" fill="#52B788"/>
+              <circle cx="450" cy="100" r="3.5" fill="#52B788"/>
+              <circle cx="530" cy="159" r="3.5" fill="#52B788"/>
+              <line x1="292" y1="26" x2="292" y2="15" stroke="#52B788" stroke-width="1" stroke-dasharray="2,2"/>
+              <text x="292" y="12" text-anchor="middle" font-size="8" fill="#52B788" font-weight="600">Peak</text>
+            </svg>
+            <div class="pheno-chart-legend">
+              <span class="legend-item legend-2024">2024</span>
+              <span class="legend-item legend-2023">2023</span>
+            </div>
+          </div>
+          <div class="pheno-cam-section">
+            <div class="pheno-cam-label">PhenoCam · BNF_MeadowSite_01 · 2024-07-12 12:00 MDT</div>
+            <div class="pheno-cam-img" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Commuter App Demo Modal -->
+  <div id="modal-commuter" class="demo-modal" role="dialog" aria-modal="true" aria-label="Commuter App Demo">
+    <div class="demo-modal-dialog">
+      <button class="demo-modal-close" aria-label="Close demo">&times;</button>
+      <div class="commuter-app">
+        <div class="commuter-header">
+          <h3>🚌 Commuter App</h3>
+          <span class="commuter-time" id="commuter-clock">8:14 AM</span>
+        </div>
+        <div class="commuter-body">
+          <span class="demo-badge">Interactive Demo</span>
+          <div class="commuter-route-input">
+            <div class="commuter-input-row">
+              <span class="commuter-input-dot start"></span>
+              <span class="commuter-input-label">From</span>
+              <span class="commuter-input-value">Home — 14 Larch Ave</span>
+            </div>
+            <div class="commuter-input-row">
+              <span class="commuter-input-dot end"></span>
+              <span class="commuter-input-label">To</span>
+              <span class="commuter-input-value">Downtown Office</span>
+            </div>
+          </div>
+          <div class="commuter-routes">
+            <p class="commuter-routes-title">Upcoming Departures</p>
+            <div class="commuter-route-card best">
+              <div class="commuter-mode-icon">🚇</div>
+              <div class="commuter-route-info">
+                <div class="commuter-route-name">Route 8 — Rapid Rail</div>
+                <div class="commuter-route-detail">Platform B · 2 stops · No transfers</div>
+              </div>
+              <div class="commuter-route-time">
+                <div class="commuter-departs" id="departs-1">8:22 AM</div>
+                <div class="commuter-duration">28 min</div>
+              </div>
+              <span class="commuter-best-badge">Fastest</span>
+            </div>
+            <div class="commuter-route-card">
+              <div class="commuter-mode-icon">🚌</div>
+              <div class="commuter-route-info">
+                <div class="commuter-route-name">Bus 42 → Bus 7</div>
+                <div class="commuter-route-detail">Stop C · 1 transfer at Central</div>
+              </div>
+              <div class="commuter-route-time">
+                <div class="commuter-departs" id="departs-2">8:19 AM</div>
+                <div class="commuter-duration">41 min</div>
+              </div>
+            </div>
+            <div class="commuter-route-card">
+              <div class="commuter-mode-icon">🚶</div>
+              <div class="commuter-route-info">
+                <div class="commuter-route-name">Walk + Bus 12</div>
+                <div class="commuter-route-detail">7 min walk to stop · 1 stop</div>
+              </div>
+              <div class="commuter-route-time">
+                <div class="commuter-departs" id="departs-3">8:30 AM</div>
+                <div class="commuter-duration">35 min</div>
+              </div>
+            </div>
+          </div>
+          <div class="commuter-map-placeholder" aria-hidden="true">
+            <span class="commuter-map-label">Route map</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
     <button class="lightbox-close" aria-label="Close photo">&times;</button>
