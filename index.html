@@ -196,18 +196,49 @@
             <div class="project-icon" aria-hidden="true">🏃</div>
             <h3>Endurance Athlete Training Tracker</h3>
             <p>
-              A personal web app built to log and visualize to plan, track and visualize 
-              training data for the endurance athlete. Proves that my passion for building 
-              data management tools applies equally towork and my love for endurance sports.
+              A personal training log and analytics platform for endurance athletes, built as both a
+              web app and a native mobile companion app. Dashboard with volume charts and goal
+              tracking, a training calendar, race calendar/results, a custom nutrition/fueling
+              database, and a pace calculator. Syncs activities from Strava, with Google sign-in and a
+              shared Firebase/Firestore backend so data stays in sync in real time across web and
+              mobile. The mobile app is built with React Native and Expo, distributed via EAS Build
+              with over-the-air updates. Proves that my passion for building data management tools
+              applies equally to work and my love for endurance sports.
             </p>
             <div class="project-tags">
               <span class="tag">Web App</span>
+              <span class="tag">React Native</span>
+              <span class="tag">Expo</span>
               <span class="tag">Data Visualization</span>
               <span class="tag">Personal Project</span>
               <span class="tag">Strava API</span>
+              <span class="tag">Firebase</span>
             </div>
             <div class="project-links">
+              <a href="https://wrazej-training-app.netlify.app/" class="project-link" target="_blank" rel="noopener noreferrer">Live App →</a>
               <a href="https://github.com/mclairewrazej-goatgirl/Ultra-Training-App" class="project-link" target="_blank" rel="noopener noreferrer">GitHub →</a>
+            </div>
+          </article>
+
+          <article class="project-card fade-in">
+            <div class="project-icon" aria-hidden="true">🗺️</div>
+            <h3>Trail·Time — GPX/FIT Timestamp Viewer</h3>
+            <p>
+              A single-page browser tool for pinpointing exactly when you were at any point along a
+              recorded activity. Drop in a GPX or FIT track (e.g. exported from Strava or copied off a
+              Garmin device) and click anywhere on the map to see the timestamp, distance, elevation
+              climbed, and elapsed time at that point. Runs entirely client-side — no account, no
+              install, no data leaves your machine.
+            </p>
+            <div class="project-tags">
+              <span class="tag">JavaScript</span>
+              <span class="tag">Web App</span>
+              <span class="tag">GPX / FIT Parsing</span>
+              <span class="tag">Personal Project</span>
+            </div>
+            <div class="project-links">
+              <a href="https://mclairewrazej-goatgirl.github.io/Trail-Time/" class="project-link" target="_blank" rel="noopener noreferrer">Live Demo →</a>
+              <a href="https://github.com/mclairewrazej-goatgirl/Trail-Time" class="project-link" target="_blank" rel="noopener noreferrer">GitHub →</a>
             </div>
           </article>
 
@@ -300,6 +331,7 @@
             <span class="tag">Time Series</span>
             <span class="tag">Image Segmentation</span>
             <span class="tag">AI-assisted Development</span>
+            <span class="tag">React Native / Expo</span>
           </div>
         </div>
 
@@ -408,15 +440,28 @@
             <div class="resume-entry">
               <div class="resume-entry-header">
                 <div>
-                  <h4 class="resume-entry-org">Ultra Training Web App</h4>
-                  <p class="resume-entry-role">Web App (In Progress)</p>
+                  <h4 class="resume-entry-org">Ultra Training App</h4>
+                  <p class="resume-entry-role">Web App &amp; React Native Mobile App</p>
                 </div>
               </div>
               <ul>
-                <li>Developing a web-based training log and analytics tool</li>
-                <li>Using Firebase for backend/database and Netlify for deployment</li>
-                <li>Focused on workout tracking, performance insights, and data visualization</li>
-                <li>Syncs with personal Strava account using Strava web API</li>
+                <li>Built a full-featured training log and analytics platform: dashboard with volume charts and goal tracking, training calendar, race calendar/results, nutrition database, and pace calculator</li>
+                <li>Extended the web app with a native mobile companion app (React Native / Expo, distributed via EAS Build) sharing a common Firebase/Firestore backend for real-time cross-device sync</li>
+                <li>Implemented Google sign-in (Firebase Auth + OAuth) and Strava API integration to import activities automatically</li>
+                <li>Deployed with Netlify (web) and EAS (iOS/Android), including OTA updates for the mobile app</li>
+              </ul>
+            </div>
+            <div class="resume-entry">
+              <div class="resume-entry-header">
+                <div>
+                  <h4 class="resume-entry-org">Trail·Time</h4>
+                  <p class="resume-entry-role">GPX/FIT Timestamp Viewer (Web App)</p>
+                </div>
+              </div>
+              <ul>
+                <li>Built a browser-based tool to look up the exact timestamp, distance, and elevation at any point along a recorded GPS activity</li>
+                <li>Wrote a custom in-browser parser for the binary FIT format alongside GPX parsing, with no server-side processing or file upload required</li>
+                <li>Implemented track smoothing for distance/elevation-gain calculations to match platforms like Strava more closely than raw point-to-point summation</li>
               </ul>
             </div>
           </div>
