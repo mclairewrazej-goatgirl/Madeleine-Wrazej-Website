@@ -87,7 +87,10 @@ function openDemo(id) {
   document.body.style.overflow = 'hidden';
   if (id === 'phenology') initPhenoDemo();
   if (id === 'commuter') initCommuterDemo();
-  if (id === 'pika') initPikaDemo();
+  if (id === 'pika') {
+    initPikaDemo();
+    setTimeout(() => pikaMap && pikaMap.invalidateSize(), 0);
+  }
 }
 
 function closeAllDemos() {
@@ -652,8 +655,22 @@ function initCommuterDemo() {
 // PIKA SPATIAL QAQC DEMO
 // ============================================================
 
-// Map coordinate system (viewBox 0 0 700 300); grid cell = 40px = 10m
+// Map coordinate system (viewBox 0 0 700 300); grid cell = 40px = 10m.
+// Kept purely as the local px/m frame the synthetic obs coordinates were
+// authored in; it's reprojected onto real lat/lng for the Leaflet map below.
 const PM = { L: 30, R: 670, T: 20, B: 270, CELL: 40 };
+const PIKA_M_PER_PX = 10 / PM.CELL;
+// Synthetic alpine talus site (Colorado Front Range) used only to anchor the demo's
+// OSM base map — not a real survey location.
+const PIKA_MAP_CENTER = { lat: 40.0546, lng: -105.6408 };
+
+function pikaPxToLatLng(x, y) {
+  const dxM = (x - (PM.L + PM.R) / 2) * PIKA_M_PER_PX;
+  const dyM = ((PM.T + PM.B) / 2 - y) * PIKA_M_PER_PX; // screen y grows south, so flip
+  const dLat = dyM / 111320;
+  const dLng = dxM / (111320 * Math.cos(PIKA_MAP_CENTER.lat * Math.PI / 180));
+  return [PIKA_MAP_CENTER.lat + dLat, PIKA_MAP_CENTER.lng + dLng];
+}
 
 const PIKA_WAYPOINTS = [
   { id: '1', x: 80,  y: 230 },
@@ -678,58 +695,103 @@ const PIKA_OBS = [
   { obs: 11, pointID: '6',  species: 'Marmot', distance: 15, direction: 10,  visual: 'Y', comments: '',            x: 565, y: 135, flag: null },
 ];
 
-function pikaGridSVG() {
-  let s = '';
-  for (let x = PM.L; x <= PM.R + 0.01; x += PM.CELL) {
-    s += `<line x1="${x}" y1="${PM.T}" x2="${x}" y2="${PM.B}" stroke="#E5E7EB" stroke-width="1"/>`;
-  }
-  for (let y = PM.T; y <= PM.B + 0.01; y += PM.CELL) {
-    s += `<line x1="${PM.L}" y1="${y}" x2="${PM.R}" y2="${y}" stroke="#E5E7EB" stroke-width="1"/>`;
-  }
-  s += `<rect x="${PM.L}" y="${PM.T}" width="${PM.R - PM.L}" height="${PM.B - PM.T}" fill="none" stroke="#D1D5DB" stroke-width="1.5"/>`;
-  s += `<text x="${PM.L}" y="${PM.T - 6}" font-size="9" fill="#9CA3AF">Grid: 10 × 10 m</text>`;
-  const sbX = PM.R - PM.CELL, sbY = PM.B + 14;
-  s += `<line x1="${sbX}" y1="${sbY}" x2="${sbX + PM.CELL}" y2="${sbY}" stroke="#6B7280" stroke-width="2"/>`;
-  s += `<text x="${sbX + PM.CELL / 2}" y="${sbY + 12}" text-anchor="middle" font-size="9" fill="#6B7280">10 m</text>`;
-  return s;
-}
-
-function pikaWaypointsSVG() {
-  let s = `<polyline points="${PIKA_WAYPOINTS.map(w => `${w.x},${w.y}`).join(' ')}" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="5,4"/>`;
-  PIKA_WAYPOINTS.forEach(w => {
-    s += `<rect x="${w.x - 5}" y="${w.y - 5}" width="10" height="10" fill="#4B5563"/>`;
-    s += `<text x="${w.x}" y="${w.y - 9}" text-anchor="middle" font-size="9" fill="#374151" font-weight="600">${w.id}</text>`;
-  });
-  return s;
-}
-
-function pikaObsMarkerSVG(o, selected) {
-  if (o.unplaced) {
-    const r = selected ? 12 : 10;
-    return `<g class="pika-map-marker" data-obs="${o.obs}">
-      <circle cx="${o.x}" cy="${o.y}" r="${r}" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="3,3"/>
-      <text x="${o.x}" y="${o.y + 4}" text-anchor="middle" font-size="11" fill="#6B7280" font-weight="700">?</text>
-      <text x="${o.x}" y="${o.y + 20}" text-anchor="middle" font-size="8" fill="#6B7280">#${o.obs}</text>
-    </g>`;
-  }
+function pikaObsMarkerStyle(o, selected) {
   const color = o.species === 'Pika' ? '#d97706' : '#2563eb';
-  const r = selected ? 9 : 6.5;
-  let ring = '';
-  if (o.flag === 'dup') ring = `<circle cx="${o.x}" cy="${o.y}" r="${r + 5}" fill="none" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="3,2"/>`;
-  else if (o.flag === 'warn') ring = `<circle cx="${o.x}" cy="${o.y}" r="${r + 5}" fill="none" stroke="#d97706" stroke-width="1.6" stroke-dasharray="3,2"/>`;
-  const selRing = selected ? `<circle cx="${o.x}" cy="${o.y}" r="${r + 3}" fill="none" stroke="#1B4332" stroke-width="2"/>` : '';
-  return `<g class="pika-map-marker" data-obs="${o.obs}">
-    ${ring}
-    <circle cx="${o.x}" cy="${o.y}" r="${r}" fill="${color}" fill-opacity="0.85" stroke="white" stroke-width="1.3"/>
-    ${selRing}
-    <text x="${o.x}" y="${o.y - r - 6}" text-anchor="middle" font-size="8.5" fill="${color}" font-weight="700">#${o.obs}</text>
-  </g>`;
+  return {
+    radius: selected ? 9 : 6.5,
+    color: selected ? '#1B4332' : 'white',
+    weight: selected ? 2 : 1.3,
+    fillColor: color,
+    fillOpacity: 0.85,
+  };
 }
 
-function renderPikaMap(selectedObs) {
-  let s = pikaGridSVG() + pikaWaypointsSVG();
-  PIKA_OBS.forEach(o => { s += pikaObsMarkerSVG(o, o.obs === selectedObs); });
-  return s;
+function pikaFlagRingStyle(o) {
+  if (o.flag === 'dup') return { radius: 11.5, color: '#dc2626', weight: 1.6, dashArray: '3,2', fill: false };
+  if (o.flag === 'warn') return { radius: 11.5, color: '#d97706', weight: 1.6, dashArray: '3,2', fill: false };
+  return null;
+}
+
+let pikaMap = null;
+let pikaObsMarkers = {};
+let pikaSelectedObs = null;
+
+function initPikaLeafletMap() {
+  const el = document.getElementById('pika-map-leaflet');
+  if (!el || pikaMap || typeof L === 'undefined') return;
+
+  pikaMap = L.map(el, { scrollWheelZoom: false }).setView([PIKA_MAP_CENTER.lat, PIKA_MAP_CENTER.lng], 18);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(pikaMap);
+  L.control.scale({ metric: true, imperial: false }).addTo(pikaMap);
+
+  const wpLatLngs = PIKA_WAYPOINTS.map(w => pikaPxToLatLng(w.x, w.y));
+  L.polyline(wpLatLngs, { color: '#9CA3AF', weight: 1.5, dashArray: '5,4', interactive: false }).addTo(pikaMap);
+
+  PIKA_WAYPOINTS.forEach((w, i) => {
+    const icon = L.divIcon({
+      className: 'pika-wp-icon-wrap',
+      html: `<div class="pika-wp-box"></div><div class="pika-wp-label">${w.id}</div>`,
+      iconSize: [10, 10],
+      iconAnchor: [5, 5],
+    });
+    L.marker(wpLatLngs[i], { icon, interactive: false }).addTo(pikaMap);
+  });
+
+  PIKA_OBS.forEach(o => {
+    const latlng = pikaPxToLatLng(o.x, o.y);
+
+    if (o.unplaced) {
+      const icon = L.divIcon({
+        className: 'pika-unplaced-icon-wrap',
+        html: `<div class="pika-unplaced-icon">?</div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+      });
+      const m = L.marker(latlng, { icon })
+        .bindTooltip(`#${o.obs}`, { permanent: true, direction: 'bottom', offset: [0, 6], className: 'pika-obs-tooltip', opacity: 1 })
+        .addTo(pikaMap);
+      m.on('click', () => selectPikaObs(o.obs));
+      pikaObsMarkers[o.obs] = m;
+      return;
+    }
+
+    const ringStyle = pikaFlagRingStyle(o);
+    if (ringStyle) L.circleMarker(latlng, { ...ringStyle, interactive: false }).addTo(pikaMap);
+
+    const color = o.species === 'Pika' ? '#d97706' : '#2563eb';
+    const m = L.circleMarker(latlng, pikaObsMarkerStyle(o, false))
+      .bindTooltip(`#${o.obs}`, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -8],
+        className: 'pika-obs-tooltip',
+        opacity: 1,
+      })
+      .addTo(pikaMap);
+    m.getTooltip().setContent(`<span style="color:${color}">#${o.obs}</span>`);
+    m.on('click', () => selectPikaObs(o.obs));
+    pikaObsMarkers[o.obs] = m;
+  });
+
+  pikaMap.fitBounds(L.latLngBounds(wpLatLngs), { padding: [30, 30] });
+}
+
+function updatePikaMapSelection(obsNum) {
+  if (pikaSelectedObs != null && pikaObsMarkers[pikaSelectedObs]) {
+    const prev = PIKA_OBS.find(x => x.obs === pikaSelectedObs);
+    if (prev && !prev.unplaced) pikaObsMarkers[pikaSelectedObs].setStyle(pikaObsMarkerStyle(prev, false));
+  }
+  pikaSelectedObs = obsNum;
+  if (obsNum != null && pikaObsMarkers[obsNum]) {
+    const cur = PIKA_OBS.find(x => x.obs === obsNum);
+    if (cur && !cur.unplaced) {
+      pikaObsMarkers[obsNum].setStyle(pikaObsMarkerStyle(cur, true));
+      pikaObsMarkers[obsNum].bringToFront();
+    }
+  }
 }
 
 function pikaLegendHTML() {
@@ -839,12 +901,6 @@ function buildPikaSurveyPanel() {
   `).join('');
 }
 
-function attachPikaMapHandlers() {
-  document.querySelectorAll('#pika-map-svg .pika-map-marker').forEach(el => {
-    el.addEventListener('click', () => selectPikaObs(parseInt(el.dataset.obs, 10)));
-  });
-}
-
 function attachPikaTableHandlers() {
   document.querySelectorAll('#pika-obs-tbl tr[data-obs]').forEach(row => {
     row.addEventListener('click', () => selectPikaObs(parseInt(row.dataset.obs, 10)));
@@ -852,14 +908,12 @@ function attachPikaTableHandlers() {
 }
 
 function selectPikaObs(obsNum) {
-  const svg = document.getElementById('pika-map-svg');
-  if (svg) svg.innerHTML = renderPikaMap(obsNum);
+  updatePikaMapSelection(obsNum);
   renderPikaObsDetail(obsNum);
   const tbl = document.getElementById('pika-obs-tbl');
   if (tbl) tbl.innerHTML = buildPikaObsTable(obsNum);
   const sel = document.getElementById('pika-obs-select');
   if (sel) sel.value = String(obsNum);
-  attachPikaMapHandlers();
   attachPikaTableHandlers();
 }
 
@@ -886,9 +940,7 @@ function initPikaDemo() {
     PIKA_OBS.map(o => `<option value="${o.obs}">#${o.obs} — ${o.species} (PointID ${o.pointID})</option>`).join('');
   document.getElementById('pika-obs-tbl').innerHTML = buildPikaObsTable(null);
 
-  const svg = document.getElementById('pika-map-svg');
-  if (svg) svg.innerHTML = renderPikaMap(null);
-  attachPikaMapHandlers();
+  initPikaLeafletMap();
   attachPikaTableHandlers();
 
   document.getElementById('pika-obs-select')?.addEventListener('change', e => {
