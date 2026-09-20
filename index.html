@@ -199,6 +199,30 @@
           </article>
 
           <article class="project-card fade-in">
+            <div class="project-icon" aria-hidden="true">🐾</div>
+            <h3>Pika Spatial QAQC</h3>
+            <p>
+              The primary QA/QC tool used by the field team to validate visual survey datasheets for
+              pika and marmot observations in Banff, Yoho, and Kootenay national parks. Loads a cleaned
+              datasheet, auto-matches it to the correct transect waypoint file, and plots every
+              observation on an interactive map with a 10×10m grid so possible double counts jump out
+              visually. Automatically flags transect name mismatches, PointID typos, incomplete
+              observation fields, and missing survey-level info before the corrected datasheet is
+              exported. Replaced a two-script legacy workflow with a single interactive Shiny app.
+            </p>
+            <div class="project-tags">
+              <span class="tag">R Shiny</span>
+              <span class="tag">Leaflet</span>
+              <span class="tag">QA/QC Pipelines</span>
+              <span class="tag">Spatial Data</span>
+              <span class="tag">Ecological Monitoring</span>
+            </div>
+            <div class="project-links">
+              <button class="project-link project-demo-btn" onclick="openDemo('pika')">View Interactive Demo →</button>
+            </div>
+          </article>
+
+          <article class="project-card fade-in">
             <div class="project-icon" aria-hidden="true">🏃</div>
             <h3>Endurance Athlete Training Tracker</h3>
             <p>
@@ -969,6 +993,115 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Pika Spatial QAQC Demo Modal -->
+  <div id="modal-pika" class="demo-modal" role="dialog" aria-modal="true" aria-label="Pika Spatial QAQC Demo">
+    <div class="demo-modal-dialog st-modal-dialog">
+      <button class="demo-modal-close" aria-label="Close demo">&times;</button>
+      <div class="st-app">
+
+        <!-- Shiny top bar -->
+        <div class="st-topbar">
+          <span class="st-topbar-title">🐾 Pika Spatial QAQC</span>
+          <span class="demo-badge">Interactive Demo</span>
+        </div>
+
+        <div class="st-layout">
+
+          <!-- Sidebar -->
+          <aside class="st-sidebar">
+            <div class="st-sb-section">
+              <div class="st-sb-heading">Field unit</div>
+              <div class="st-radio-grp" id="pika-unit-grp">
+                <label class="st-radio-opt st-radio-active" data-unit="LLYK">LLYK</label>
+                <label class="st-radio-opt" data-unit="Banff">Banff</label>
+              </div>
+            </div>
+            <div class="st-sb-section">
+              <div class="st-sb-heading">Datasheet format</div>
+              <div class="st-radio-grp" id="pika-format-grp">
+                <label class="st-radio-opt st-radio-active" data-format="xlsx">Original .xlsx</label>
+                <label class="st-radio-opt" data-format="csv">Reviewer .csv</label>
+              </div>
+            </div>
+            <div class="st-sb-section">
+              <div class="st-sb-heading">Datasheet</div>
+              <div class="st-file-drop">
+                <span class="st-file-icon">📄</span>
+                <span class="st-file-text">DataEntry_2026-06-02_LLYK-T03_MW_2026_1.xlsx</span>
+                <span class="st-file-hint">Demo data pre-loaded</span>
+              </div>
+            </div>
+            <div class="st-sb-divider"></div>
+            <div class="st-sb-section">
+              <div class="st-sb-heading">QAQC flags</div>
+              <ul class="pika-flag-list" id="pika-flag-list"></ul>
+            </div>
+            <div class="st-sb-note">Demo only — synthetic data</div>
+          </aside>
+
+          <!-- Main -->
+          <div class="st-main">
+            <div class="st-success-banner" id="pika-success-banner">✓ Loaded 11 observations across 1 transect — XY file auto-matched.</div>
+
+            <div class="st-ctrl-row">
+              <div class="st-ctrl">
+                <label class="st-label">Transect File Name</label>
+                <select class="st-sel" disabled>
+                  <option selected>LLYK-T03_2026-06-02.xlsx</option>
+                </select>
+              </div>
+              <div class="st-ctrl">
+                <label class="st-label">Jump to ObsNum</label>
+                <select class="st-sel" id="pika-obs-select"></select>
+              </div>
+              <div class="st-ctrl" style="flex:0 0 auto; justify-content:flex-end;">
+                <button class="st-dl-btn" id="pika-survey-info-btn">View / Edit All Survey Info ▾</button>
+              </div>
+            </div>
+
+            <!-- Survey info panel -->
+            <div class="pika-survey-panel" id="pika-survey-panel" hidden></div>
+
+            <!-- Main tabs -->
+            <div class="st-tabs-bar" role="tablist">
+              <button class="st-tab st-tab-active" data-target="pika-panel-map" role="tab">Interactive Map</button>
+              <button class="st-tab" data-target="pika-panel-table" role="tab">Observations Table</button>
+              <button class="st-tab" data-target="pika-panel-checks" role="tab">QAQC Checks</button>
+            </div>
+
+            <!-- Map panel -->
+            <div class="st-panel" id="pika-panel-map">
+              <div class="st-chart-wrap">
+                <svg id="pika-map-svg" viewBox="0 0 700 300" class="pheno-svg" aria-label="Interactive observation map with 10x10m grid"></svg>
+              </div>
+              <div class="pika-legend" id="pika-legend"></div>
+              <div class="pika-obs-detail" id="pika-obs-detail">
+                <p class="st-note">Click a marker on the map, or pick an ObsNum above, to review an observation.</p>
+              </div>
+            </div>
+
+            <!-- Table panel -->
+            <div class="st-panel st-panel-hidden" id="pika-panel-table">
+              <p class="st-note" style="margin-bottom:4px">Rows with a flagged field are highlighted — click a row to locate it on the map.</p>
+              <div class="st-tbl-wrap" id="pika-obs-tbl"></div>
+            </div>
+
+            <!-- QAQC Checks panel -->
+            <div class="st-panel st-panel-hidden" id="pika-panel-checks">
+              <p class="st-note" style="margin-bottom:4px">Automated checks run on load for the original hand-filled datasheet format.</p>
+              <div class="st-tbl-wrap" id="pika-checks-tbl"></div>
+            </div>
+
+            <div class="st-dl-row">
+              <button class="st-dl-btn" id="pika-dl-btn">⬇ Download corrected datasheet (.xlsx)</button>
+            </div>
+            <p class="st-note">Demo only — no download; on the live app this saves into <code>Error Checked Datasheets/</code>.</p>
+          </div><!-- /.st-main -->
+        </div><!-- /.st-layout -->
+      </div><!-- /.st-app -->
     </div>
   </div>
 

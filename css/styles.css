@@ -1802,6 +1802,142 @@ body {
   .commuter-info-panel { padding: 18px; }
 }
 
+/* --- Pika Spatial QAQC demo (new) --- */
+.pika-flag-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pika-flag-list li {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.pika-flag-ok {
+  color: #6ee7b7;
+  background: rgba(110, 231, 183, 0.08);
+}
+
+.pika-flag-warn {
+  color: #fde68a;
+  background: rgba(253, 230, 138, 0.1);
+}
+
+.pika-map-marker { cursor: pointer; }
+.pika-map-marker:hover { opacity: 0.85; }
+
+.pika-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 0 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.pika-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pika-legend-swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pika-obs-detail {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+}
+
+.pika-obs-detail-title {
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pika-obs-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 6px 16px;
+}
+
+.pika-obs-detail-grid div span {
+  display: block;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.pika-flag-pill {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
+.pika-flag-pill-dup { background: #fee2e2; color: #991b1b; }
+.pika-flag-pill-warn { background: #fef3c7; color: #92400e; }
+.pika-flag-pill-ok { background: #d1fae5; color: #065f46; }
+
+.pika-survey-panel {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px 16px;
+}
+
+.pika-survey-panel[hidden] { display: none; }
+
+.pika-field span {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.pika-field-value {
+  font-size: 0.8125rem;
+  color: var(--text);
+}
+
+.pika-field-flagged {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.pika-field-flagged .pika-field-value { color: #991b1b; font-weight: 600; }
+
+.pika-tbl-row-warn td { background: #fffbeb !important; }
+.pika-tbl-row-dup td { background: #fef2f2 !important; }
+.pika-tbl-row-selected td { outline: 2px solid var(--accent); outline-offset: -2px; }
+
 /* === Contact === */
 .contact {
   background: var(--primary);
