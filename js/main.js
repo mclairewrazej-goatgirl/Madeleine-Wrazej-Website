@@ -87,6 +87,7 @@ function openDemo(id) {
   document.body.style.overflow = 'hidden';
   if (id === 'phenology') initPhenoDemo();
   if (id === 'commuter') initCommuterDemo();
+  if (id === 'pika') initPikaDemo();
 }
 
 function closeAllDemos() {
@@ -644,5 +645,284 @@ function initCommuterDemo() {
     const orig = el.textContent;
     el.textContent = 'Demo only — no download';
     setTimeout(() => { el.textContent = orig; }, 1800);
+  });
+}
+
+// ============================================================
+// PIKA SPATIAL QAQC DEMO
+// ============================================================
+
+// Map coordinate system (viewBox 0 0 700 300); grid cell = 40px = 10m
+const PM = { L: 30, R: 670, T: 20, B: 270, CELL: 40 };
+
+const PIKA_WAYPOINTS = [
+  { id: '1', x: 80,  y: 230 },
+  { id: '2', x: 170, y: 195 },
+  { id: '3', x: 260, y: 220 },
+  { id: '4', x: 360, y: 180 },
+  { id: '5', x: 460, y: 205 },
+  { id: '6', x: 560, y: 165 },
+];
+
+const PIKA_OBS = [
+  { obs: 1,  pointID: '1',  species: 'Pika',   distance: 4,  direction: 45,  visual: 'Y', comments: '',            x: 95,  y: 215, flag: null },
+  { obs: 2,  pointID: '1',  species: 'Marmot', distance: 12, direction: 130, visual: 'Y', comments: '',            x: 110, y: 250, flag: null },
+  { obs: 3,  pointID: '2',  species: 'Pika',   distance: 6,  direction: 300, visual: 'N', comments: 'Heard only',  x: 155, y: 178, flag: null },
+  { obs: 4,  pointID: '3',  species: 'Pika',   distance: 3,  direction: 80,  visual: 'Y', comments: '',            x: 272, y: 208, flag: 'dup' },
+  { obs: 5,  pointID: '3',  species: 'Pika',   distance: 3,  direction: 84,  visual: 'Y', comments: '',            x: 276, y: 210, flag: 'dup' },
+  { obs: 6,  pointID: '4',  species: 'Marmot', distance: 9,  direction: 200, visual: 'Y', comments: '',            x: 345, y: 198, flag: null },
+  { obs: 7,  pointID: '4',  species: 'Pika',   distance: 5,  direction: 15,  visual: '',  comments: '',            x: 365, y: 155, flag: 'warn' },
+  { obs: 8,  pointID: '5',  species: 'Pika',   distance: 7,  direction: 250, visual: 'Y', comments: '',            x: 440, y: 222, flag: null },
+  { obs: 9,  pointID: '12', species: 'Marmot', distance: 4,  direction: 60,  visual: 'Y', comments: '',            x: 630, y: 250, flag: 'pointid', unplaced: true },
+  { obs: 10, pointID: '6',  species: 'Pika',   distance: 2,  direction: 100, visual: 'Y', comments: '',            x: 540, y: 185, flag: null },
+  { obs: 11, pointID: '6',  species: 'Marmot', distance: 15, direction: 10,  visual: 'Y', comments: '',            x: 565, y: 135, flag: null },
+];
+
+function pikaGridSVG() {
+  let s = '';
+  for (let x = PM.L; x <= PM.R + 0.01; x += PM.CELL) {
+    s += `<line x1="${x}" y1="${PM.T}" x2="${x}" y2="${PM.B}" stroke="#E5E7EB" stroke-width="1"/>`;
+  }
+  for (let y = PM.T; y <= PM.B + 0.01; y += PM.CELL) {
+    s += `<line x1="${PM.L}" y1="${y}" x2="${PM.R}" y2="${y}" stroke="#E5E7EB" stroke-width="1"/>`;
+  }
+  s += `<rect x="${PM.L}" y="${PM.T}" width="${PM.R - PM.L}" height="${PM.B - PM.T}" fill="none" stroke="#D1D5DB" stroke-width="1.5"/>`;
+  s += `<text x="${PM.L}" y="${PM.T - 6}" font-size="9" fill="#9CA3AF">Grid: 10 × 10 m</text>`;
+  const sbX = PM.R - PM.CELL, sbY = PM.B + 14;
+  s += `<line x1="${sbX}" y1="${sbY}" x2="${sbX + PM.CELL}" y2="${sbY}" stroke="#6B7280" stroke-width="2"/>`;
+  s += `<text x="${sbX + PM.CELL / 2}" y="${sbY + 12}" text-anchor="middle" font-size="9" fill="#6B7280">10 m</text>`;
+  return s;
+}
+
+function pikaWaypointsSVG() {
+  let s = `<polyline points="${PIKA_WAYPOINTS.map(w => `${w.x},${w.y}`).join(' ')}" fill="none" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="5,4"/>`;
+  PIKA_WAYPOINTS.forEach(w => {
+    s += `<rect x="${w.x - 5}" y="${w.y - 5}" width="10" height="10" fill="#4B5563"/>`;
+    s += `<text x="${w.x}" y="${w.y - 9}" text-anchor="middle" font-size="9" fill="#374151" font-weight="600">${w.id}</text>`;
+  });
+  return s;
+}
+
+function pikaObsMarkerSVG(o, selected) {
+  if (o.unplaced) {
+    const r = selected ? 12 : 10;
+    return `<g class="pika-map-marker" data-obs="${o.obs}">
+      <circle cx="${o.x}" cy="${o.y}" r="${r}" fill="#F3F4F6" stroke="#9CA3AF" stroke-width="1.5" stroke-dasharray="3,3"/>
+      <text x="${o.x}" y="${o.y + 4}" text-anchor="middle" font-size="11" fill="#6B7280" font-weight="700">?</text>
+      <text x="${o.x}" y="${o.y + 20}" text-anchor="middle" font-size="8" fill="#6B7280">#${o.obs}</text>
+    </g>`;
+  }
+  const color = o.species === 'Pika' ? '#d97706' : '#2563eb';
+  const r = selected ? 9 : 6.5;
+  let ring = '';
+  if (o.flag === 'dup') ring = `<circle cx="${o.x}" cy="${o.y}" r="${r + 5}" fill="none" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="3,2"/>`;
+  else if (o.flag === 'warn') ring = `<circle cx="${o.x}" cy="${o.y}" r="${r + 5}" fill="none" stroke="#d97706" stroke-width="1.6" stroke-dasharray="3,2"/>`;
+  const selRing = selected ? `<circle cx="${o.x}" cy="${o.y}" r="${r + 3}" fill="none" stroke="#1B4332" stroke-width="2"/>` : '';
+  return `<g class="pika-map-marker" data-obs="${o.obs}">
+    ${ring}
+    <circle cx="${o.x}" cy="${o.y}" r="${r}" fill="${color}" fill-opacity="0.85" stroke="white" stroke-width="1.3"/>
+    ${selRing}
+    <text x="${o.x}" y="${o.y - r - 6}" text-anchor="middle" font-size="8.5" fill="${color}" font-weight="700">#${o.obs}</text>
+  </g>`;
+}
+
+function renderPikaMap(selectedObs) {
+  let s = pikaGridSVG() + pikaWaypointsSVG();
+  PIKA_OBS.forEach(o => { s += pikaObsMarkerSVG(o, o.obs === selectedObs); });
+  return s;
+}
+
+function pikaLegendHTML() {
+  return `
+    <span class="pika-legend-item"><span class="pika-legend-swatch" style="background:#d97706"></span>Pika observation</span>
+    <span class="pika-legend-item"><span class="pika-legend-swatch" style="background:#2563eb"></span>Marmot observation</span>
+    <span class="pika-legend-item"><span class="pika-legend-swatch" style="background:#4B5563;border-radius:2px"></span>Transect waypoint</span>
+    <span class="pika-legend-item"><span class="pika-legend-swatch" style="border:1.6px dashed #dc2626;background:none"></span>Possible duplicate</span>
+    <span class="pika-legend-item"><span class="pika-legend-swatch" style="border:1.6px dashed #d97706;background:none"></span>Flagged / incomplete</span>
+    <span class="pika-legend-item"><span class="pika-legend-swatch" style="border:1.6px dashed #9CA3AF;background:none"></span>PointID not found</span>
+  `;
+}
+
+function pikaFlagPill(o) {
+  if (o.flag === 'dup') return `<span class="pika-flag-pill pika-flag-pill-dup">Possible duplicate</span>`;
+  if (o.flag === 'warn') return `<span class="pika-flag-pill pika-flag-pill-warn">Incomplete</span>`;
+  if (o.flag === 'pointid') return `<span class="pika-flag-pill pika-flag-pill-warn">PointID not found</span>`;
+  return `<span class="pika-flag-pill pika-flag-pill-ok">OK</span>`;
+}
+
+function buildPikaObsTable(selectedObs) {
+  const rows = PIKA_OBS.map(o => {
+    const rowClass = o.flag === 'dup' ? 'pika-tbl-row-dup' : (o.flag ? 'pika-tbl-row-warn' : '');
+    const selClass = o.obs === selectedObs ? 'pika-tbl-row-selected' : '';
+    return `<tr class="${rowClass} ${selClass}" data-obs="${o.obs}" style="cursor:pointer">
+      <td>#${o.obs}</td><td>LLYK-T03</td><td>${o.pointID}</td><td>${o.species}</td>
+      <td>${o.distance}</td><td>${o.direction}°</td><td>${o.visual || '<em>blank</em>'}</td>
+      <td>${o.comments || ''}</td><td>${pikaFlagPill(o)}</td>
+    </tr>`;
+  }).join('');
+  return `<table class="st-tbl"><thead><tr>
+    <th>ObsNum</th><th>Transect</th><th>PointID</th><th>Species</th><th>Dist (m)</th><th>Dir</th><th>Visual</th><th>Comments</th><th>Flag</th>
+  </tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function buildPikaChecksTable() {
+  const rows = [
+    ['Survey date vs. file name', 'ok', 'Match — 2026-06-02'],
+    ['Transect name vs. reference list', 'ok', 'Match — LLYK-T03'],
+    ['PointID numeric format', 'ok', 'All 11 PointIDs valid'],
+    ['TransectFileName vs. XY files', 'warn', 'Auto-matched — Obs #9 uses a PointID not present in the XY file'],
+    ['Observation completeness', 'warn', '1 flagged — Obs #7 is missing Visual'],
+    ['Duplicate detection (10×10m grid)', 'warn', '1 possible duplicate — Obs #4 and #5 within ~0.5 m'],
+    ['Survey info completion', 'warn', '1 field missing — Number of Observers'],
+  ];
+  const body = rows.map(([label, status, detail]) => {
+    const pill = status === 'ok'
+      ? '<span class="pika-flag-pill pika-flag-pill-ok">✓ Pass</span>'
+      : '<span class="pika-flag-pill pika-flag-pill-warn">⚠ Flagged</span>';
+    return `<tr><td>${label}</td><td>${pill}</td><td>${detail}</td></tr>`;
+  }).join('');
+  return `<table class="st-tbl"><thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead><tbody>${body}</tbody></table>`;
+}
+
+function buildPikaFlagList() {
+  const items = [
+    ['ok', '✓ Survey date matches file name'],
+    ['ok', '✓ Transect name matches reference list'],
+    ['ok', '✓ TransectFileName auto-matched to XY file'],
+    ['warn', '⚠ 1 PointID not found in XY file (Obs #9)'],
+    ['warn', '⚠ 1 incomplete observation (Obs #7)'],
+    ['warn', '⚠ Possible duplicate — Obs #4 & #5'],
+    ['warn', '⚠ 1 survey info field missing'],
+  ];
+  return items.map(([type, text]) => `<li class="pika-flag-${type}">${text}</li>`).join('');
+}
+
+function renderPikaObsDetail(obsNum) {
+  const panel = document.getElementById('pika-obs-detail');
+  if (!panel) return;
+  const o = PIKA_OBS.find(x => x.obs === obsNum);
+  if (!o) {
+    panel.innerHTML = `<p class="st-note">Click a marker on the map, or pick an ObsNum above, to review an observation.</p>`;
+    return;
+  }
+  panel.innerHTML = `
+    <div class="pika-obs-detail-title">Observation #${o.obs} ${pikaFlagPill(o)}</div>
+    <div class="pika-obs-detail-grid">
+      <div><span>Transect</span>LLYK-T03</div>
+      <div><span>PointID</span>${o.pointID}${o.flag === 'pointid' ? ' <span style="color:#991b1b">(not in XY file)</span>' : ''}</div>
+      <div><span>Species</span>${o.species}</div>
+      <div><span>Distance</span>${o.distance} m</div>
+      <div><span>Direction</span>${o.direction}°</div>
+      <div><span>Visual</span>${o.visual || '(blank)'}</div>
+      <div><span>Comments</span>${o.comments || '—'}</div>
+    </div>
+  `;
+}
+
+function buildPikaSurveyPanel() {
+  const fields = [
+    ['Transect', 'LLYK-T03', false],
+    ['Transect File Name', 'LLYK-T03_2026-06-02.xlsx', false],
+    ['Date', '2026-06-02', false],
+    ['Survey #', '1', false],
+    ['Observers', 'M. Wrazej, J. Sinclair', false],
+    ['Number of Observers', 'Missing', true],
+    ['Time Start', '08:40', false],
+    ['Time End', '11:15', false],
+    ['Pika/Marmot Survey', 'Yes', false],
+  ];
+  return fields.map(([label, value, flagged]) => `
+    <div class="pika-field${flagged ? ' pika-field-flagged' : ''}">
+      <span>${label}</span>
+      <div class="pika-field-value">${value}</div>
+    </div>
+  `).join('');
+}
+
+function attachPikaMapHandlers() {
+  document.querySelectorAll('#pika-map-svg .pika-map-marker').forEach(el => {
+    el.addEventListener('click', () => selectPikaObs(parseInt(el.dataset.obs, 10)));
+  });
+}
+
+function attachPikaTableHandlers() {
+  document.querySelectorAll('#pika-obs-tbl tr[data-obs]').forEach(row => {
+    row.addEventListener('click', () => selectPikaObs(parseInt(row.dataset.obs, 10)));
+  });
+}
+
+function selectPikaObs(obsNum) {
+  const svg = document.getElementById('pika-map-svg');
+  if (svg) svg.innerHTML = renderPikaMap(obsNum);
+  renderPikaObsDetail(obsNum);
+  const tbl = document.getElementById('pika-obs-tbl');
+  if (tbl) tbl.innerHTML = buildPikaObsTable(obsNum);
+  const sel = document.getElementById('pika-obs-select');
+  if (sel) sel.value = String(obsNum);
+  attachPikaMapHandlers();
+  attachPikaTableHandlers();
+}
+
+let pikaSurveyOpen = false;
+function togglePikaSurveyPanel() {
+  const panel = document.getElementById('pika-survey-panel');
+  const btn = document.getElementById('pika-survey-info-btn');
+  if (!panel) return;
+  pikaSurveyOpen = !pikaSurveyOpen;
+  panel.hidden = !pikaSurveyOpen;
+  if (pikaSurveyOpen) panel.innerHTML = buildPikaSurveyPanel();
+  if (btn) btn.textContent = pikaSurveyOpen ? 'View / Edit All Survey Info ▴' : 'View / Edit All Survey Info ▾';
+}
+
+let pikaDemoInited = false;
+function initPikaDemo() {
+  if (pikaDemoInited) return;
+  pikaDemoInited = true;
+
+  document.getElementById('pika-flag-list').innerHTML = buildPikaFlagList();
+  document.getElementById('pika-legend').innerHTML = pikaLegendHTML();
+  document.getElementById('pika-checks-tbl').innerHTML = buildPikaChecksTable();
+  document.getElementById('pika-obs-select').innerHTML = '<option value="">— Select —</option>' +
+    PIKA_OBS.map(o => `<option value="${o.obs}">#${o.obs} — ${o.species} (PointID ${o.pointID})</option>`).join('');
+  document.getElementById('pika-obs-tbl').innerHTML = buildPikaObsTable(null);
+
+  const svg = document.getElementById('pika-map-svg');
+  if (svg) svg.innerHTML = renderPikaMap(null);
+  attachPikaMapHandlers();
+  attachPikaTableHandlers();
+
+  document.getElementById('pika-obs-select')?.addEventListener('change', e => {
+    if (e.target.value) selectPikaObs(parseInt(e.target.value, 10));
+  });
+
+  document.getElementById('pika-survey-info-btn')?.addEventListener('click', togglePikaSurveyPanel);
+
+  // Field unit / datasheet format toggles (visual only)
+  document.querySelectorAll('#pika-unit-grp .st-radio-opt, #pika-format-grp .st-radio-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.closest('.st-radio-grp').querySelectorAll('.st-radio-opt').forEach(b => b.classList.remove('st-radio-active'));
+      btn.classList.add('st-radio-active');
+    });
+  });
+
+  // Main tab switching
+  document.querySelectorAll('#modal-pika .st-tabs-bar .st-tab[data-target]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const bar = btn.closest('.st-tabs-bar');
+      bar.querySelectorAll('.st-tab').forEach(b => b.classList.remove('st-tab-active'));
+      btn.classList.add('st-tab-active');
+      const container = bar.parentElement;
+      const target = btn.dataset.target;
+      container.querySelectorAll(':scope > .st-panel').forEach(p => {
+        p.classList.toggle('st-panel-hidden', p.id !== target);
+      });
+    });
+  });
+
+  document.getElementById('pika-dl-btn')?.addEventListener('click', () => {
+    const btn = document.getElementById('pika-dl-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Demo only — no download';
+    setTimeout(() => { btn.textContent = orig; }, 1800);
   });
 }
