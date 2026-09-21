@@ -660,9 +660,9 @@ function initCommuterDemo() {
 // authored in; it's reprojected onto real lat/lng for the Leaflet map below.
 const PM = { L: 30, R: 670, T: 20, B: 270, CELL: 40 };
 const PIKA_M_PER_PX = 10 / PM.CELL;
-// Synthetic alpine talus site (Colorado Front Range) used only to anchor the demo's
-// OSM base map — not a real survey location.
-const PIKA_MAP_CENTER = { lat: 40.0546, lng: -105.6408 };
+// Synthetic alpine talus site (Lake Agnes trail, Lake Louise, Alberta) used only to
+// anchor the demo's OSM base map — not a real survey location.
+const PIKA_MAP_CENTER = { lat: 51.4193, lng: -116.2213 };
 
 function pikaPxToLatLng(x, y) {
   const dxM = (x - (PM.L + PM.R) / 2) * PIKA_M_PER_PX;
